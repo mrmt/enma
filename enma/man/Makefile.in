@@ -1,0 +1,30 @@
+# $Id: Makefile.in 489 2008-08-26 04:01:10Z takahiko $
+
+prefix =		@prefix@
+exec_prefix =	@exec_prefix@
+bindir =		@bindir@
+libdir =		@libdir@
+includedir =	@includedir@
+sysconfdir =	@sysconfdir@
+localstatedir =	@localstatedir@
+srcdir =		@srcdir@
+mandir =		@mandir@
+
+CC =			@CC@
+VPATH =			$(srcdir)
+
+INSTALL	= @INSTALL@
+INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_SCRIPT	= @INSTALL_SCRIPT@
+INSTALL_DATA	= @INSTALL_DATA@
+
+
+all:
+
+install:
+	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
+	$(INSTALL_DATA) enma.1 $(DESTDIR)$(mandir)/man1/enma.1
+
+clean:
+
+distclean:

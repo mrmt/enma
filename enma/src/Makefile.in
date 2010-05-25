@@ -1,0 +1,47 @@
+# $Id$
+
+prefix =		@prefix@
+exec_prefix =	@exec_prefix@
+bindir =		@bindir@
+libdir =		@libdir@
+includedir =	@includedir@
+sysconfdir =	@sysconfdir@
+localstatedir =	@localstatedir@
+srcdir =		@srcdir@
+
+CC =			@CC@
+VPATH =			$(srcdir)
+
+INSTALL	= @INSTALL@
+INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_SCRIPT	= @INSTALL_SCRIPT@
+INSTALL_DATA	= @INSTALL_DATA@
+
+CPPFLAGS =		-I../include -I../../libsidf/include -I../../
+CPPFLAGS +=		@CPPFLAGS@ @DEFS@
+CFLAGS =		@CFLAGS@
+LDFLAGS =		-lmilter -lbind -L../../libsidf/src -lsidf @LIBS@ @LDFLAGS@
+
+SRCS :=			$(wildcard *.c)
+OBJS :=			$(patsubst %.c,%.o,$(SRCS))
+
+BINFILES :=		enma
+
+
+all: $(BINFILES)
+
+install: $(BINFILES)
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL_PROGRAM) -c $(BINFILES) $(DESTDIR)$(bindir)
+
+enma: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $+ $(LDFLAGS)
+
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+
+clean:
+	rm -rf $(LIB) *.o *~
+
+distclean: clean
+	rm -f Makefile

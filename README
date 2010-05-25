@@ -1,0 +1,58 @@
+			    README of ENMA
+			   August 27, 2008
+
+* ENMA
+
+  ENMA is a milter program for the domain authentication technologies.
+  It authenticates sender's address with SPF and Sender ID, then
+  labels the result onto the Authentication-Results: field.
+
+  ENMA implements the following RFCs and an Internet Draft:
+
+  - RFC4406 (Sender ID)
+  - RFC4407 (PRA)
+  - RFC4408 (SPF)
+  - draft-kucherawy-sender-auth-header-15
+    (the Authentication-Results: field)
+
+  ENMA is developed by IIJ. IIJ has been using several domain
+  authentication software, though, all of them appeared unstable. ENMA
+  is designed and implemented in order to stand large ISP's operation
+  and is well-tested.
+
+* Functionality
+
+  - SPF authentication
+
+    Extracting a sender address from SMTP MAIL FROM. If "<>" is
+    specified in SMTP MAIL FROM, it is extracted from SMTP EHLO/HELO.
+    Authentication result is recorded onto the Authentication-Results:
+    field. The Received-SPF: field is not used.
+
+  - Sender ID authentication
+
+    Extracting a sender address from a mail header with RPA.
+    Authentication result is recorded onto the Authentication-Results:
+    field.
+
+  - Inserting/deleting the Authentication-Results: field
+
+    Recording results of SPF authentication and Sender ID
+    authentication onto the Authentication-Results: field. Also, to
+    prevent insertion of faked Authentication-Results: fields, the
+    fields which contains the hostname specified with
+    authresult.identifier are deleted.
+
+* Contact info
+
+  You can download ENMA packages at the following website:
+
+    http://sourceforge.net/projects/enma/
+
+  Please use the following mailing lists for questions and discussions
+  on ENMA:
+
+    enma-users@lists.sourceforge.net (English)
+    enma-users-jp@lists.sourceforge.net (Japanese)
+
+$Id: README 506 2008-08-27 09:20:46Z takahiko $

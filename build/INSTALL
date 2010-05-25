@@ -1,0 +1,130 @@
+
+		Automatic building and installing ENMA
+
+This document describes automatic building.
+
+With automatic building, libbind and libmilter are compiled in a
+temporary directory and linked to ENMA. libbind and libmilter are not
+installed. Just enma is installed.
+
+To install libbind and libmilter manually, please refer to
+"../INSTALL.ja".
+
+* Steps of manual building and execution
+
+  1. Extracting
+
+    $ tar xzf enma-x.y.z.tar.gz
+    $ cd enma-x.y.z/build
+
+  2. Moving obtained bind-9.x.x.tar.gz and sendmail.8.x.x.tar.gz
+
+    $ mv /path/to/bind-9.x.x.tar.gz .
+    $ mv /path/to/sendmail.8.x.x.tar.gz .
+
+  3. Building
+
+    $ ./build_all.sh --prefix=/usr/local
+
+  4. Installing
+
+    $ ./build_all.sh -n install
+    $ sudo ./build_all.sh install
+
+  5. Cleaning up the temporary directory
+
+    $ ./build_all.sh clean
+
+  6. Preparing the configuration file
+
+    $ sudo cp ../enma/etc/enma.conf.sample /etc/enma.conf
+
+  7. Creating the directory for the PID file
+
+    In the sample configuration file, "/var/run/enma/enma.pid" is
+    specified to "milter.pidfile". So, you need to change permission
+    of the directory so that "milter.user" can write.
+
+    $ sudo mkdir -p /var/run/enma
+    $ sudo chown daemon:daemon /var/run/enma
+    $ sudo chmod 700 /var/run/enma
+
+  8. Executing
+
+    $ sudo /usr/local/bin/enma -c /etc/enma.conf
+
+* Details of "build_all.sh"
+
+  If you execute "build_all.sh", a temporary directory will be created
+  under the "enma-x.y.z/build" directory and ENMA will be compiled.
+
+  Usage is as follows:
+
+    Building:
+      build_all.sh [--prefix=PREFIX] [build]
+
+      --prefix:
+        Specifies an install directory of ENMA
+        The default value: /usr/local
+
+    Installing:
+      build_all.sh [-n] install
+
+      -n:
+        Just displays sequence of installation commands, 
+  	without executing them actually.
+
+    Cleaning up the temporary directory:
+      build_all.sh clean
+
+  Please specify an install directory of ENMA with the "--prefix"
+  option. If omitted, ENMA will be installed in the "/usr/local"
+  directory.
+
+  "build_all.sh" uses either "site.config.m4.poll-generic" or
+  "site.config.m4.poll-m64" and defines SM_CONF_POLL described in
+  "Notes on building ENMA for the many user environments" in
+  "../INSTALL.ja".
+
+  Build would fail if necessary commands cannot be found. Please
+  modify the variables in the beginning of build_all.sh.
+
+    MAKE_CMD:
+      Specifies the GNU "make" command. "gmake" is used if
+      bound. Otherwise, "make" is used.  The default value: either
+      "gmake" or "make"
+
+    TAR_CMD:
+      Specifies the "tar" command which accepts the "-C" option. It
+      might be installed as "gtar".
+      The default value: tar
+
+    SED_CMD:
+      Specify the "sed" command, which is used to generate
+      "site.config.m4".
+      The default value: sed
+
+    GROUPS_CMD:
+      Specifies the "groups" command, which is used to lookup groups
+      when installing "libmilter" to the temporary.
+      The default value: groups
+
+    M64_FLAG:
+      Specify "1" for the 64bit environment. If specified, "libbind",
+      "libmilter", and ENMA are build as 64bit binaries.
+      The default value: 0
+
+    BUILD_USER:
+      Specify a user name to install "libmilter" to the temporary
+      directory. If omitted, the ${USER} environment variable is
+      used.
+      The default value: not specified
+
+    BUILD_GROUP: 
+      Specify a group name to install "libmilter" to the temporary
+      directory.  If omitted, groups are looked up wiht the ${USER}
+      environment variable and the first one is used.
+
+      The default value: not specified
+
+$Id: INSTALL 503 2008-08-27 07:51:09Z takahiko $

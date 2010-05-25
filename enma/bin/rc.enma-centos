@@ -1,0 +1,75 @@
+#!/bin/bash
+#
+# Copyright (c) 2008 Internet Initiative Japan Inc. All rights reserved.
+#
+# The terms and conditions of the accompanying program
+# shall be provided separately by Internet Initiative Japan Inc.
+# Any use, reproduction or distribution of the program are permitted
+# provided that you agree to be bound to such terms and conditions.
+#
+# $Id: rc.enma-centos 384 2008-08-18 11:17:34Z takahiko $
+# 
+# chkconfig: 345 99 0
+# description: ENMA is a SPF/SIDF milter.
+
+# source function library
+. /etc/init.d/functions
+
+RETVAL=0
+prog=enma
+
+ENMA=/usr/bin/enma
+CONF_FILE=/etc/enma.conf
+LOCK_FILE=/var/lock/subsys/enma
+
+
+function start()
+{
+    echo -n $"Starting ${prog}: "
+    #ulimit -n 65000      #<maximum size of open file descriptors>
+    #ulimit -s 512        #<maximum size of stack size>
+    ${ENMA} -c ${CONF_FILE} && success || failure
+    RETVAL=$?
+    [ ${RETVAL} -eq 0 ] && touch ${LOCK_FILE}
+    echo
+}
+
+function stop()
+{
+    echo -n $"Stopping ${prog}: "
+    killproc ${ENMA} -TERM
+    RETVAL=$?
+    [ ${RETVAL} -eq 0 ] && rm -f ${LOCK_FILE}
+    echo
+}
+
+function restart()
+{
+    stop && sleep 5 && start
+}
+
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload)
+        restart
+        ;;
+    condrestart)
+        [ -f ${LOCK_FILE} ] && restart
+        ;;
+    status)
+        status ${ENMA}
+        RETVAL=$?
+        ;;
+    *)
+        echo "Usage: ${prog} {start|stop|restart|reload|condrestart|status}"
+        RETVAL=1
+        ;;
+esac
+
+exit ${RETVAL}

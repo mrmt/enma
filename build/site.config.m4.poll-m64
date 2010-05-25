@@ -1,0 +1,16 @@
+dnl # $Id:site.config.m4.solaris 464 2007-10-19 05:25:32Z tsuruda $
+dnl #
+dnl # site.config.m4 sample for 64bit OS
+
+define(`confINCLUDEDIR', `@prefix@/include')
+define(`confLIBDIR', `@prefix@/lib')
+define(`confLIBOWN', `@user@')
+define(`confLIBGRP', `@group@')
+define(`confINCOWN', `@user@')
+define(`confINCGRP', `@group@')
+
+APPENDDEF(`confINCDIRS', `-I@prefix@/bind/include')
+APPENDDEF(`confLIBS', `@prefix@/lib/libbind.a')
+APPENDDEF(`confENVDIF', `-DSM_CONF_POLL=1')
+APPENDDEF(`confOPTIMIZE', `-g')
+APPENDDEF(`confCCOPTS', `-m64')

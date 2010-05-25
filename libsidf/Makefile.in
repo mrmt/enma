@@ -1,0 +1,30 @@
+#
+# $Id: Makefile.in 9 2008-05-13 01:31:52Z takahiko $
+#
+
+SUBDIRS = src
+
+all:
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) all); \
+	done
+
+install:
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) install); \
+	done
+
+clean:
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) clean); \
+	done
+
+distclean: clean
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) distclean); \
+	done
+	rm -f Makefile

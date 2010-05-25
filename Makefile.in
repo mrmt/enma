@@ -1,0 +1,38 @@
+#
+# $Id: Makefile.in 497 2008-08-26 09:00:50Z takahiko $
+#
+
+SUBDIRS = libsidf enma
+
+.PHONY: install
+
+all:
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) all); \
+	done
+
+docs:
+	doxygen
+
+install:
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) install); \
+	done
+
+clean:
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) clean); \
+	done
+
+distclean: clean
+	@for subdir in $(SUBDIRS); \
+	do \
+		(cd $$subdir && $(MAKE) distclean); \
+	done
+	rm -f Makefile config.status config.h config.log
+
+autoconf:
+	autoheader && autoconf

@@ -1,0 +1,47 @@
+# $Id: Makefile.in 452 2008-08-21 14:22:29Z takahiko $
+
+prefix =		@prefix@
+exec_prefix =	@exec_prefix@
+bindir =		@bindir@
+libdir =		@libdir@
+includedir =	@includedir@
+sysconfdir =	@sysconfdir@
+localstatedir =	@localstatedir@
+srcdir =		@srcdir@
+
+CC =			@CC@
+VPATH =			$(srcdir)
+
+INSTALL	= @INSTALL@
+INSTALL_PROGRAM	= @INSTALL_PROGRAM@
+INSTALL_SCRIPT	= @INSTALL_SCRIPT@
+INSTALL_DATA	= @INSTALL_DATA@
+
+CPPFLAGS =		-I../include -I../../libsidf/include -I../../
+CPPFLAGS +=		@CPPFLAGS@ @DEFS@
+CFLAGS =		@CFLAGS@
+LDFLAGS =		-L../../libsidf/src @LIBS@ -lsidf -lbind @LDFLAGS@
+
+SRCS :=			$(wildcard *.c)
+OBJS :=			$(patsubst %.c,%.o,$(SRCS))
+
+BINFILES :=		sidfquery
+
+
+all: $(BINFILES)
+
+install: sidfquery
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL_PROGRAM) -c $(BINFILES) $(DESTDIR)$(bindir)
+
+sidfquery: sidfquery.o
+	$(CC) $(CFLAGS) -o $@ $+ $(LDFLAGS)
+
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+
+clean:
+	rm -rf $(BINFILES) *.o *~
+
+distclean: clean
+	rm -f Makefile

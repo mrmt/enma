@@ -1,0 +1,179 @@
+
+			ENMA インストール手順
+
+* 対応OS
+  - Linux
+  - FreeBSD, NetBSD
+  - MacOS X 10.5.x
+  - Solaris 10 以上
+
+* 必要なソフトウェア
+  - GNU C Compiler
+  - GNU Make
+  - libbind (bind 9 以上)
+  - libmilter (sendmail 8.13 以上)
+
+* 2つのビルド方法
+
+  - 自動ビルド
+
+　　libbind および libmilter を一時ディレクトリに作成しリンクします。
+    build/INSTALL.ja を参照してください。このファイルを読み続ける必要は
+    ありません。
+
+  - 手作業ビルド
+
+　　libbind および libmilter をインストールし、それにリンクするバイナリを作
+    成する場合、引き続き以下を読んで下さい。
+
+* 手作業ビルドから起動までの手順
+
+  1. 展開
+
+    $ tar xzf enma-x.y.z.tar.gz
+    $ cd enma-x.y.z
+
+  2. 依存するライブラリのインストール
+
+  「依存するライブラリのビルド」を参考に libind および libmilter をイン
+   ストールしてください。
+
+  3. configure の実行
+
+    libind と libmilter のヘッダとライブラリが "/usr/local" にインストー
+    ルされている場合は、引数なしで configure を実行します。
+
+    $ ./configure
+
+    それ以外のディレクトリにインストールされている場合は、--with-libbind
+    および --with-libmilter オプションで、基底ディレクトリを指定してく
+    ださい
+
+    たとえば、libbind の規定ディレクトリが "/foo"、libmilter のそれが
+    "/bar" のときは、以下のように実行します。
+
+    $ ./configure --with-libbind=/foo --with-libmilter=/bar
+
+  4. ビルドの実行
+
+    $ make
+
+  5. インストール
+
+    $ sudo make install
+
+  6. 設定ファイルの準備
+
+    $ sudo cp enma/etc/enma.conf.sample /etc/enma.conf
+
+  7. PID ファイル用ディレクトリの作成
+
+    サンプルの設定ファイルでは "milter.pidfile" に
+    "/var/run/enma/enma.pid" を指定しています。そこで、設定項目
+    "milter.user" で指定したユーザ権限で、このディレクトリに書き込める
+    ようにパーミッションを設定します。
+
+    $ sudo mkdir -p /var/run/enma
+    $ sudo chown daemon:daemon /var/run/enma
+    $ sudo chmod 700 /var/run/enma
+
+  8. 起動
+
+    $ sudo /usr/local/bin/enma -c /etc/enma.conf
+  
+* MTA の設定
+
+  メール受信時に ENMA を利用するように MTA を設定します。
+
+  - sendmail の場合
+    .mc ファイル中で MAIL_FILTER または INPUT_MAIL_FILTER マクロで
+    ENMA のmilter ソケットを指定し、sendmail.cf を生成します。
+
+    例) ENMA デフォルトのソケットを利用する場合：
+
+        INPUT_MAIL_FILTER(`enma', `S=inet:10025@127.0.0.1')dnl
+
+    INPUT_MAIL_FILTER 設定の詳細については、sendmail パッケージに含まれ
+    ている cf/README 等を参照してください。
+
+  - postfix (2.4 以降) の場合
+    ENMA の設定項目 "milter.postfix" を "true" に設定してください。
+    postfix の設定ファイル mail.cf の smtpd_milters で ENMA の milter
+    ソケットを指定します。
+
+    例) ENMA デフォルトのソケットを利用する場合：
+
+        smtpd_milters = inet:127.0.0.1:10025
+
+    postfix の milter サポートの詳細については postfix パッケージに含ま
+    れている README_FILES/MILTER_README を参照してください。
+
+* 依存するライブラリのビルド
+
+  libbind および libmilter 共に /usr/local 以下にインストールする例
+
+  - libbind
+    $ tar zxf bind-x.y.z
+    $ cd bind-x.y.z/lib/bind
+    $ ./configure --prefix=/usr/local --enable-threads
+    $ make
+    $ sudo make install
+
+  - libmilter
+    $ tar zxf sendmail.x.y.z.tar.gz
+    $ cd sendmail-x.y.z
+
+    - devtools/Site/site.config.m4 に以下を記述:
+    define(`confINCLUDEDIR', `/usr/local/include')
+    define(`confLIBDIR', `/usr/local/lib')
+    APPENDDEF(`confINCDIRS', `-I/usr/local/bind/include')
+    APPENDDEF(`confLIBS', `/usr/local/lib/libbind.a')
+    # その他の設定は各 OS に応じて追加してください
+
+    $ cd libmilter
+    $ ./Build
+    $ sudo ./Build install
+
+  libbind および libmilter のビルド手順の詳細については、それぞれのパッケー
+  ジに付属のドキュメント等を参照してください。
+
+* 大規模用途のバイナリを作成する場合の注意点
+
+  - libmilter で SM_CONF_POLL を有効にする
+
+    sendmail との通信に select() を利用すると、FD_SETSIZE 以上の値を持
+    つファイルディスクリプタを扱えません。poll() を使用すべきです。その
+    ため、libmilter をビルドする際にはSM_CONF_POLL を定義します。
+
+    build/site.config.m4.poll-generic を参考にして下さい。
+
+      # site.config.m4 に追加する設定
+      APPENDDEF(`confENVDIF', `-DSM_CONF_POLL=1')
+
+    build/build_all.sh を使いインストールした場合は、自動的に有効になり
+    ます。
+
+  - SPARC 版 Solaris 環境では、gcc の "-m64" オプションを利用する
+
+    Solaris の 32bit 版の fopen (libbind内で使用されている) は 255 より
+    大きな値のファイルディスクリプタを扱えません。そこで 64bit 版のバイ
+    ナリを作成する "-m64" オプションを使用し、ライブラリや ENMA を作成
+    します。
+
+    - libbind
+
+      $ ./configure CFLAGS=-m64 LDFLAGS=-m64
+
+    - libmilter
+
+      build/site.config.m4.poll-m64 を参考にして下さい。
+
+      # site.config.m4 に追加する設定
+      APPENDDEF(`confENVDIF', `-DSM_CONF_POLL=1')
+      APPENDDEF(`confCCOPTS', `-m64')
+
+    - ENMA
+
+      $ ./configure CFLAGS=-m64 LDFLAGS=-m64
+
+$Id: INSTALL.ja 507 2008-08-27 09:25:48Z takahiko $

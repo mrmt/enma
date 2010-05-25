@@ -1,0 +1,54 @@
+			    README of ENMA
+			    2008年8月27日
+
+* ENMA
+
+  ENMA は、送信ドメイン認証のための milter プログラムです。送信アドレス
+  を SPF および Sender ID の方式で認証し、認証結果を
+  Authentication-Results: フィールドとして挿入します。
+
+  ENMA は、以下の RFC および Internet Draft を実装しています:
+
+  - RFC4406 (Sender ID)
+  - RFC4407 (PRA)
+  - RFC4408 (SPF)
+  - draft-kucherawy-sender-auth-header-15
+    (the Authentication-Results: field)
+
+  ENMA は、IIJ が開発しました。IIJ は、業務として種々の送信ドメイン認証
+  ソフトウェアを利用してきましたが、どれも不安定でした。ENMA は、大手
+  ISP の運用に耐えられるように設計実装され、十分にテストされています。
+
+* 機能
+
+  - SPF 認証
+    
+    SMTP MAIL FROM から送信アドレスを抽出します。SMTP MAIL FROM に
+    "<>" が指定されている場合は SMTP EHLO/HELO で指定されたドメインを用
+    います。認証結果は Authentication-Results: フィールドを用いて付与し
+    ます。Received-SPF: フィールドは使用しません。
+
+  - Sender ID 認証
+
+    PRA を使用してメールのヘッダから送信アドレスを抽出します。認証結果
+    は Authentication-Results: フィールドを用いて付与します。
+
+  - Authentication-Results: フィールドの挿入/削除
+
+    SPF および Sender ID の認証結果を Authentication-Results: フィール
+    ドに記録します。また、外部から偽の Authentication-Results: フィール
+    ドを挿入されるのを防ぐため、設定項目 authresult.identifier で指定し
+    たホスト名を含んだ Authentication-Results: フィールドを削除します。
+
+* 連絡先
+
+  ENMA のパッケージは以下のウェブサイトで入手できます:
+
+    http://sourceforge.net/projects/enma/
+
+  ENMA に関する質問や議論には以下のメーリングリストを活用してください:
+
+    enma-users@lists.sourceforge.net (英語)
+    enma-users-jp@lists.sourceforge.net (日本語)
+
+$Id: README.ja 506 2008-08-27 09:20:46Z takahiko $

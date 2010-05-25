@@ -1,0 +1,125 @@
+
+		   ENMA の自動ビルドとインストール
+
+この手順書は、自動ビルドについて説明します。
+
+自動ビルドでは、libbind および libmilter を一時ディレクトリでコンパイル
+し、ENMA にリンクします。libbind や libmilter はインストールされず、
+ENMA のみをインストールできます。
+
+libbind および libmilter を手作業でインストールする場合は、
+"../INSTALL.ja" を参照してください。
+
+* ビルドから起動までの手順
+
+  1. 展開
+
+    $ tar xzf enma-x.y.z.tar.gz
+    $ cd enma-x.y.z/build
+
+  2. 取得した bind-9.x.x.tar.gz および sendmail.8.x.x.tar.gz を移動
+
+    $ mv /path/to/bind-9.x.x.tar.gz .
+    $ mv /path/to/sendmail.8.x.x.tar.gz .
+
+  3. ビルド
+
+    $ ./build_all.sh --prefix=/usr/local
+
+  4. インストール
+
+    $ ./build_all.sh -n install
+    $ sudo ./build_all.sh install
+
+  5. 一時ファイルの削除
+
+    $ ./build_all.sh clean
+
+  6. 設定ファイルの準備
+
+    $ sudo cp ../enma/etc/enma.conf.sample /etc/enma.conf
+
+  7. PID ファイル用ディレクトリの作成
+
+    サンプルの設定ファイルでは "milter.pidfile" に
+    "/var/run/enma/enma.pid" を指定しています。そこで、設定項目
+    "milter.user" で指定したユーザ権限で、このディレクトリに書き込める
+    ようにパーミッションを設定します。
+
+    $ sudo mkdir -p /var/run/enma
+    $ sudo chown daemon:daemon /var/run/enma
+    $ sudo chmod 700 /var/run/enma
+
+  8. 起動
+
+    $ sudo /usr/local/bin/enma -c /etc/enma.conf
+
+* build_all.sh の詳細
+
+  build_all.sh を実行すると、enma-x.y.z/build 以下に一時ディレクトリが
+  作成され、ENMA がコンパイルされます。
+
+  使い方を以下に示します。
+
+    ビルド:
+      build_all.sh [--prefix=PREFIX] [build]
+
+      --prefix:
+        ENMA をインストールするディレクトリを指定できます。
+        デフォルト値: /usr/local
+
+    インストール:
+      build_all.sh [-n] install
+
+      -n:
+        インストールせずに、実行するコマンドを表示します。
+
+    一時ファイルの削除:
+      build_all.sh clean
+
+  build_all.sh は、"site.config.m4.poll-generic" または、
+  "site.config.m4.poll-m64" を利用し、"../INSTALL.ja" の「大規模用途の
+  バイナリを作成する場合の注意点」で説明されているSM_CONF_POLL を定義し
+  ます。
+
+  ビルドが失敗する場合、必要なコマンドが見つからないなどの理由が考えら
+  れます。build_all.sh の先頭にある変数を変更すれば、うまくいくかもしれ
+  ません。
+
+    MAKE_CMD:
+      GNU make を指定します。gmake があれば gmake を、それ以外では
+      make を使います。
+      デフォルト値: gmake または make
+
+    TAR_CMD:
+      -C オプションを受け付ける tar コマンドを指定します。gtar という名
+      前でインストールされているかもしれません。
+      デフォルト値: tar
+
+    SED_CMD:
+      sed コマンドを指定します。site.config.m4 を作成するために使用され
+      ます。
+      デフォルト値: sed
+
+    GROUPS_CMD:
+      groups コマンドを指定します。libmilter を一時ディレクトリにインス
+      トールする際のグループ名取得に使用されます。
+      デフォルト値: groups
+
+    M64_FLAG:
+      64bit 環境の場合、"1" を指定します。指定することで、libbind,
+      libmilter, enma が 64bit 用のバイナリとしてビルドされます。
+      デフォルト値: 0
+
+    BUILD_USER:
+      libmilter を一時ディレクトリにインストールするためのユーザ名を指定
+      します。省略した場合は、環境変数の ${USER} を参照します。
+      デフォルト値: 指定なし
+
+    BUILD_GROUP: 
+      libmilter を一時ディレクトリにインストールするためのグループ名を
+      指定します。省略した場合は、環境変数の ${USER} が所属するグループ
+      を参照し、先頭のグループ名を参照します。
+      デフォルト値: 指定なし
+
+$Id: INSTALL.ja 495 2008-08-26 07:37:39Z kazu $

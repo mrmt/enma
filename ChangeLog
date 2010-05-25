@@ -1,0 +1,24 @@
+2008-08-28  SUZUKI Takahiko  <takahiko@iij.ad.jp>
+
+	* 1.0.0
+	* public release
+
+2008-08-26  SUZUKI Takahiko  <takahiko@iij.ad.jp>
+
+	* 0.9.2
+	* translate documents into English
+	* fix pid file permission
+	* fix sysconf(_SC_GETPW_R_SIZE_MAX) problem on FreeBSD
+
+2008-08-22  SUZUKI Takahiko  <takahiko@iij.ad.jp>
+
+	* 0.9.1
+	* improve build script
+	* add man pages
+
+2008-08-19  SUZUKI Takahiko  <takahiko@iij.ad.jp>
+
+	* 0.9.0
+	* internal beta release
+
+$Id: ChangeLog 504 2008-08-27 08:31:59Z takahiko $
