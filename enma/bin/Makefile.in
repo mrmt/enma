@@ -20,7 +20,7 @@ INSTALL_DATA	= @INSTALL_DATA@
 CPPFLAGS =		-I../include -I../../libsidf/include -I../../
 CPPFLAGS +=		@CPPFLAGS@ @DEFS@
 CFLAGS =		@CFLAGS@
-LDFLAGS =		-L../../libsidf/src @LIBS@ -lsidf -lbind @LDFLAGS@
+LDFLAGS =		-L../../libsidf/src @LIBS@ -lsidf @LDFLAGS@ /usr/lib/libresolv.a
 
 SRCS :=			$(wildcard *.c)
 OBJS :=			$(patsubst %.c,%.o,$(SRCS))

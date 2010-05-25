@@ -55,13 +55,9 @@ CFLAGS="$CFLAGS -std=gnu99 -Wall -Wextra"
 CPPFLAGS="$CPPFLAGS -I$includedir -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS"
 LDFLAGS="$LDFLAGS -L$libdir -lpthread"
 
-AC_CHECK_LIB(bind, __res_ndestroy,
-	[true],     dnl skip default action 
-	[AC_MSG_ERROR(libbind not found)])
-
 AC_CHECK_LIB(milter, smfi_main,
 	[true],     dnl skip default action
-	[AC_MSG_ERROR(libmilter not found)], [-lbind])
+	[AC_MSG_ERROR(libmilter not found)])
 
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_FILES(Makefile libsidf/Makefile libsidf/src/Makefile enma/Makefile)

@@ -38,7 +38,7 @@ void
 DnsResolver_free(DnsResolver *self)
 {
     assert(NULL != self);
-    res_ndestroy(&self->resolver);
+    res_nclose(&self->resolver);
     /*
      * glibc-2.4.0 以降ならば
      * res_nclose(&self->resolver);

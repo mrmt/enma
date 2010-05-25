@@ -19,6 +19,10 @@
 #include <resolv.h>
 #include <arpa/nameser.h>
 
+#ifndef NS_MAXMSG
+#define NS_MAXMSG NS_PACKETSZ
+#endif
+
 typedef struct DnsResolver {
     struct __res_state resolver;
     ns_msg msghanlde;

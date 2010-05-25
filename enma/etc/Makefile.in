@@ -20,7 +20,7 @@ INSTALL_DATA	= @INSTALL_DATA@
 CPPFLAGS =		-I../include -I../../libsidf/include -I../../
 CPPFLAGS +=		@CPPFLAGS@ @DEFS@
 CFLAGS =		@CFLAGS@
-LDFLAGS =		-lbind -L../../libsidf/src -lsidf @LIBS@ @LDFLAGS@
+LDFLAGS =		-L../../libsidf/src -lsidf @LIBS@ @LDFLAGS@
 
 SRCS :=			$(wildcard *.c)
 OBJS :=			$(patsubst %.c,%.o,$(SRCS))

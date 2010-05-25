@@ -2,7 +2,7 @@
 
 prefix =		@prefix@
 exec_prefix =	@exec_prefix@
-bindir =		@bindir@
+bindir =		@sbindir@
 libdir =		@libdir@
 includedir =	@includedir@
 sysconfdir =	@sysconfdir@
@@ -20,7 +20,7 @@ INSTALL_DATA	= @INSTALL_DATA@
 CPPFLAGS =		-I../include -I../../libsidf/include -I../../
 CPPFLAGS +=		@CPPFLAGS@ @DEFS@
 CFLAGS =		@CFLAGS@
-LDFLAGS =		-lmilter -lbind -L../../libsidf/src -lsidf @LIBS@ @LDFLAGS@
+LDFLAGS =		-lmilter -L../../libsidf/src -lsidf @LIBS@ @LDFLAGS@ /usr/lib/libresolv.a
 
 SRCS :=			$(wildcard *.c)
 OBJS :=			$(patsubst %.c,%.o,$(SRCS))
@@ -41,7 +41,7 @@ enma: $(OBJS)
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
 
 clean:
-	rm -rf $(LIB) *.o *~
+	rm -rf $(LIB) *~ $(BINFILES) $(OBJS)
 
 distclean: clean
 	rm -f Makefile
