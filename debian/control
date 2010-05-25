@@ -1,0 +1,15 @@
+Source: enma
+Section: mail
+Priority: optional
+Maintainer: Jun Morimoto <morimoto@mrmt.net>
+Build-Depends: debhelper (>= 7), autotools-dev, libmilter-dev, libbind-dev
+Standards-Version: 3.7.3
+Homepage: http://sourceforge.net/projects/enma
+
+Package: enma
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libmilter1.0.1, postfix|sendmail
+Description: A sender authentication milter supporting SPF and Sender ID
+ ENMA is a milter program for the domain authentication technologies.
+ It authenticates sender's address with SPF and Sender ID, then
+ labels the result onto the Authentication-Results: field.

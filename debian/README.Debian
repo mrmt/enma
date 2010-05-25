@@ -1,0 +1,8 @@
+enma for Debian
+---------------------
+
+ENMA is a milter program for the domain authentication technologies.
+It authenticates sender's address with SPF and Sender ID, then
+labels the result onto the Authentication-Results: field.
+
+ -- Jun Morimoto <morimoto@mrmt.net>  Sat, 30 Aug 2008 19:28:49 +0900

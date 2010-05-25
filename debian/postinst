@@ -1,0 +1,7 @@
+#!/bin/sh -e
+set -e
+mkdir /var/run/enma
+chmod 700 /var/run/enma
+chown daemon.daemon /var/run/enma
+
+#DEBHELPER#
